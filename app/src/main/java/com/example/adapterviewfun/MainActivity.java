@@ -5,8 +5,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -44,5 +48,25 @@ public class MainActivity extends AppCompatActivity {
         //adapterview example 2
         //list view with a dynamic data source
         //List<Book>
+        ListView listView = (ListView) findViewById(R.id.listView);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String selection = parent.getItemAtPosition(position).toString();
+                Toast.makeText(MainActivity.this, "book" + selection, Toast.LENGTH_LONG).show();
+            }
+        });
+        //list of book
+        //copy/paste book.java into this project
+        List<Book> books = new ArrayList<>();
+        books.add(new Book("book 1", "Bob", 30));
+        books.add(new Book("book 2", "Larry", 33));
+        books.add(new Book("book 3", "Joe", 25));
+        books.add(new Book());
+
+        //what does an adapter do?
+        //data source <-> array adapter <-> spinner/listview
     }
+
+
 }
