@@ -1,10 +1,14 @@
 package com.example.adapterviewfun;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -53,9 +57,34 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String selection = parent.getItemAtPosition(position).toString();
-                Toast.makeText(MainActivity.this, "book" + selection, Toast.LENGTH_LONG).show();
+                //show an alert dialog
+                //use AlertDialog.Builder class and method chaining
+                AlertDialog.Builder alertBuilder =
+                        new AlertDialog.Builder(MainActivity.this);
+                alertBuilder.setTitle("item clicked")
+                        .setMessage("You clicked: " + selection)
+                        .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Log.d("TAG", "onClick: okay clicked");
+                                Toast.makeText(MainActivity.this, "okay", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .setNegativeButton("Dismiss", null)
+                        .show();
+                //on clicking outside it doesn't do any of the three
+                //onResume()?
             }
         });
+
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            //return if this method 'consumed' this event
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                return true; //so the onItemClick is not also called
+            }
+        });
+
         //list of book
         //copy/paste book.java into this project
         List<Book> books = new ArrayList<>();
@@ -66,6 +95,23 @@ public class MainActivity extends AppCompatActivity {
 
         //what does an adapter do?
         //data source <-> array adapter <-> spinner/listview
+        //set up an array adapter to be the middleman between our datasource, books, and the adapterview  listview
+        ArrayAdapter<Book> arrayAdapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_list_item_1, //the view for each item in a row of the list view
+                books //datasource
+        );
+        listView.setAdapter(arrayAdapter);
+
+
+        //dynamic datasource
+        books.remove(1);
+        //force an update
+        arrayAdapter.notifyDataSetChanged();
+
+
+        //alert dialog
+
     }
 
 
